@@ -31,20 +31,21 @@ def move_to_trash_before_date(m, folder, days_before):
                                                                                              folder))
             # m.store("1:{0}".format(no_msgs_del), '+X-GM-LABELS', '\\Trash')  # move to trash
             num = 0
+            step = 1000
             while num < int(no_msgs_del):
                 try:
                     # m.store(num, '+FLAGS', '\\Deleted')
                     start = num
-                    if num + 100 > int(no_msgs_del):
+                    if num + step > int(no_msgs_del):
                         num = int(no_msgs_del)
                         end = int(no_msgs_del)
                     else:
-                        end = num + 100
-                        num += 100
+                        end = num + step
+                        num += step
                     m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
                     print("Deleted messages #{0}..{1} of {2}".format(start, end, no_msgs_del))
                 except Exception:
-                    print("Deleting message #{0} error:\n{1}".format(num, Exception))
+                    print("Deleting message #{0} error:\n{1}".format(num, Exception.__name__))
             print("Deleted {0} messages.".format(no_msgs_del))
         else:
             print("- Nothing to remove.")
