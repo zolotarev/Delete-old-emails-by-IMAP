@@ -1,17 +1,12 @@
 import imaplib
 import datetime
-
-MAIL_SERVER = 'imap.gmail.com'
-MAIL_PORT = 993
-USERNAME = 'zolotarev@its.bz'
-PASSWORD = 'Heruvima80'
-MAX_DAYS = 365  # Deletes messages older than days
+import config
 
 
 def connect_imap():
-    m = imaplib.IMAP4_SSL(MAIL_SERVER, MAIL_PORT)  # server to connect to
+    m = imaplib.IMAP4_SSL(config.MAIL_SERVER, config.MAIL_PORT)  # server to connect to
     print("{0} Connecting to mailbox via IMAP...".format(datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")))
-    m.login(USERNAME, PASSWORD)
+    m.login(config.USERNAME, config.PASSWORD)
 
     return m
 
@@ -33,7 +28,7 @@ def move_to_trash_before_date(m, folder, days_before):
             no_msgs_del = data[0].decode().split()[-1]  # last msg id in the list
             print("- Marked {0} messages for removal with dates before {1} in '{2}'.".format(no_msgs_del, before_date,
                                                                                              folder))
-            #m.store("1:{0}".format(no_msgs_del), '+X-GM-LABELS', '\\Trash')  # move to trash
+            # m.store("1:{0}".format(no_msgs_del), '+X-GM-LABELS', '\\Trash')  # move to trash
             for num in data[0].decode().split():
                 try:
                     m.store(num, '+FLAGS', '\\Deleted')
@@ -69,11 +64,17 @@ def disconnect_imap(m):
 
 
 if __name__ == '__main__':
+    config.MAIL_SERVER = input("MAIL_SERVER [" + config.MAIL_SERVER + "]: ") or config.MAIL_SERVER
+    config.MAIL_PORT = int(input("MAIL_PORT [" + str(config.MAIL_PORT) + "]: ") or config.MAIL_PORT)
+    config.USERNAME = input("USERNAME [" + config.USERNAME + "]: ") or config.USERNAME
+    config.PASSWORD = input("PASSWORD [" + config.PASSWORD + "]: ") or config.PASSWORD
+    config.MAX_DAYS = int(input("MAX_DAYS [" + str(config.MAX_DAYS) + "]: ") or config.MAX_DAYS)
+
     m_con = connect_imap()
     for i in m_con.list()[1]:
         l = i.decode().split(' "/" ')
         print(l[0] + " = " + l[1])
-        move_to_trash_before_date(m_con, l[1], MAX_DAYS)
+        move_to_trash_before_date(m_con, l[1], config.MAX_DAYS)
 
     empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
 
