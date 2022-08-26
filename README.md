@@ -13,7 +13,7 @@
 
 You must set to unlimited access for IMAP in gmail [setings](https://disq.us/url?url=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F%23settings%2Ffwdandpop%3AkPFdxxuYErYJGtgv_KferTgWSE8&cuid=2785055)\
 Then allow access for unsafe apps [here](https://myaccount.google.com/lesssecureapps)\
-Finally run script and fill values:
+Finally run the script, fill values and wait:
 ```sh
 python clear-old-emails-imap.py
 ```
