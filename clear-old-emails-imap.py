@@ -7,6 +7,7 @@ def connect_imap():
     m = imaplib.IMAP4_SSL(config.MAIL_SERVER, config.MAIL_PORT)  # server to connect to
     print("{0} Connecting to mailbox via IMAP...".format(datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")))
     m.login(config.USERNAME, config.PASSWORD)
+    imaplib._MAXLINE = 100000000000
 
     return m
 
@@ -29,7 +30,7 @@ def move_to_trash_before_date(m, folder, days_before):
             print("- Marked {0} messages for removal with dates before {1} in '{2}'.".format(no_msgs_del, before_date,
                                                                                              folder))
             # m.store("1:{0}".format(no_msgs_del), '+X-GM-LABELS', '\\Trash')  # move to trash
-            num = 1
+            num = 0
             while num < int(no_msgs_del):
                 try:
                     # m.store(num, '+FLAGS', '\\Deleted')
