@@ -42,7 +42,8 @@ def move_to_trash_before_date(m, folder, days_before):
                     else:
                         end = num + step
                         num += step
-                    m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
+                    #m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
+                    m.store("{0}:{1}".format(start, end), '+X-GM-LABELS', '\\Trash')  # move to trash
                     print("Deleted messages #{0}..{1} of {2}".format(start, end, no_msgs_del))
                 except Exception:
                     print("Deleting message #{0} error:\n{1}".format(num, Exception.__name__))
