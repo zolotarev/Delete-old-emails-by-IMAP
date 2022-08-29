@@ -42,11 +42,11 @@ def move_to_trash_before_date(m, folder, days_before):
                     else:
                         end = num + step
                         num += step
-                    #m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
+                    # m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
                     m.store("{0}:{1}".format(start, end), '+X-GM-LABELS', '\\Trash')  # move to trash
                     print("Deleted messages #{0}..{1} of {2}".format(start, end, no_msgs_del))
                 except Exception:
-                    print("Deleting message #{0} error:\n{1}".format(num, Exception.__name__))
+                    print("Deleting message #{0} error:\n{1}".format(num, Exception.with_traceback()))
             print("Deleted {0} messages.".format(no_msgs_del))
         else:
             print("- Nothing to remove.")
@@ -59,7 +59,11 @@ def move_to_trash_before_date(m, folder, days_before):
 def empty_folder(m, folder, do_expunge=True):
     print("- Empty '{0}' & Expunge all mail...".format(folder))
     m.select(folder)  # select all trash
-    m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+    try:
+        m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+    except Exception:
+        print('Folder {0} not found'.format(folder))
+        
     if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
         m.expunge()  # not need if auto-expunge enabled
     else:
@@ -71,7 +75,7 @@ def disconnect_imap(m):
     print("{0} Done. Closing connection & logging out.".format(datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")))
     m.close()
     m.logout()
-    # print "All Done."
+    print("All Done.")
     return
 
 
@@ -83,11 +87,12 @@ if __name__ == '__main__':
     config.MAX_DAYS = int(input("MAX_DAYS [" + str(config.MAX_DAYS) + "]: ") or config.MAX_DAYS)
 
     m_con = connect_imap()
-    for i in m_con.list()[1]:
-        l = i.decode().split(' "/" ')
-        print(l[0] + " = " + l[1])
-        move_to_trash_before_date(m_con, l[1], config.MAX_DAYS)
+    # print(m_con.list()[1])
+    # for i in m_con.list()[1]:
+    #     l = i.decode().split(' "/" ')
+    #     print(l[0] + " = " + l[1])
+    #     move_to_trash_before_date(m_con, l[1], config.MAX_DAYS)
 
+    empty_folder(m_con, '[Gmail]/&BBoEPgRABDcEOAQ9BDA-', do_expunge=True)  # can send do_expunge=False, default True
     empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
-
     disconnect_imap(m_con)
