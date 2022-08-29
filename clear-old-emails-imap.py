@@ -63,7 +63,7 @@ def empty_folder(m, folder, do_expunge=True):
         m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
     except Exception:
         print('Folder {0} not found'.format(folder))
-        
+
     if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
         m.expunge()  # not need if auto-expunge enabled
     else:
@@ -88,10 +88,10 @@ if __name__ == '__main__':
 
     m_con = connect_imap()
     # print(m_con.list()[1])
-    # for i in m_con.list()[1]:
-    #     l = i.decode().split(' "/" ')
-    #     print(l[0] + " = " + l[1])
-    #     move_to_trash_before_date(m_con, l[1], config.MAX_DAYS)
+    for i in m_con.list()[1]:
+        folder = i.decode().split(' "/" ')
+        print(folder[0] + " = " + folder[1])
+        move_to_trash_before_date(m_con, folder[1], config.MAX_DAYS)
 
     empty_folder(m_con, '[Gmail]/&BBoEPgRABDcEOAQ9BDA-', do_expunge=True)  # can send do_expunge=False, default True
     empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
