@@ -42,7 +42,7 @@ def move_to_trash_before_date(m, folder, days_before):
                     else:
                         end = num + step
                         num += step
-                    #m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
+                    # m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
                     print("{0}:{1}".format(start, end))
                     m.store("{0}:{1}".format(start, end), '+X-GM-LABELS', '\\Trash')  # move to trash
                     print("Deleted messages #{0}..{1} of {2}".format(start, end, no_msgs_del))
@@ -95,11 +95,11 @@ if __name__ == '__main__':
         move_to_trash_before_date(m_con, folder[1], config.MAX_DAYS)
 
     try:
-      empty_folder(m_con, '[Gmail]/&BBoEPgRABDcEOAQ9BDA-', do_expunge=True)  # can send do_expunge=False, default True
+        empty_folder(m_con, '[Gmail]/&BBoEPgRABDcEOAQ9BDA-', do_expunge=True)  # can send do_expunge=False, default True
     except Exception:
-      print("Can't empy trash. Error:\n{0}".format(Exception.with_traceback()))
+        print("Can't empy trash. Error:\n{0}".format(Exception.with_traceback()))
     try:
-      empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
+        empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
     except Exception:
-      print("Can't empy trash. Error:\n{0}".format(Exception.with_traceback()))
+        print("Can't empy trash. Error:\n{0}".format(Exception.with_traceback()))
     disconnect_imap(m_con)
