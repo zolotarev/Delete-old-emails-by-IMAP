@@ -30,7 +30,7 @@ def move_to_trash_before_date(m, folder, days_before):
             print("- Marked {0} messages for removal with dates before {1} in '{2}'.".format(no_msgs_del, before_date,
                                                                                              folder))
             # m.store("1:{0}".format(no_msgs_del), '+X-GM-LABELS', '\\Trash')  # move to trash
-            num = 0
+            num = 1
             step = 1000
             while num < int(no_msgs_del):
                 try:
@@ -42,7 +42,8 @@ def move_to_trash_before_date(m, folder, days_before):
                     else:
                         end = num + step
                         num += step
-                    # m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
+                    #m.store("{0}:{1}".format(start, end), '+FLAGS', '\\Deleted')
+                    print("{0}:{1}".format(start, end))
                     m.store("{0}:{1}".format(start, end), '+X-GM-LABELS', '\\Trash')  # move to trash
                     print("Deleted messages #{0}..{1} of {2}".format(start, end, no_msgs_del))
                 except Exception:
@@ -93,6 +94,12 @@ if __name__ == '__main__':
         print(folder[0] + " = " + folder[1])
         move_to_trash_before_date(m_con, folder[1], config.MAX_DAYS)
 
-    empty_folder(m_con, '[Gmail]/&BBoEPgRABDcEOAQ9BDA-', do_expunge=True)  # can send do_expunge=False, default True
-    empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
+    try:
+      empty_folder(m_con, '[Gmail]/&BBoEPgRABDcEOAQ9BDA-', do_expunge=True)  # can send do_expunge=False, default True
+    except Exception:
+      print("Can't empy trash. Error:\n{0}".format(Exception.with_traceback()))
+    try:
+      empty_folder(m_con, '[Gmail]/Trash', do_expunge=True)  # can send do_expunge=False, default True
+    except Exception:
+      print("Can't empy trash. Error:\n{0}".format(Exception.with_traceback()))
     disconnect_imap(m_con)
